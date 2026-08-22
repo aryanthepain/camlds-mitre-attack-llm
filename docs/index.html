@@ -3,356 +3,604 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MITRE ATT&CK Alert Mapper — AI-Powered Cybersecurity Pipeline</title>
-  <meta name="description" content="End-to-end RAG pipeline mapping Suricata IDS network alerts to MITRE ATT&CK techniques using LLM and semantic retrieval. Built by Aryan Gupta.">
-  <meta property="og:title" content="MITRE ATT&CK Alert Mapper — AI-Powered Cybersecurity Pipeline">
-  <meta property="og:description" content="Automated mapping of Suricata IDS alerts to MITRE ATT&CK techniques using RAG, ChromaDB, and local LLMs.">
+  <title>Defensive AI: Mapping Network Alerts to MITRE ATT&CK — Engineering Case Study</title>
+  <meta name="description" content="An end-to-end RAG architecture mapping Suricata IDS network telemetry to MITRE ATT&CK Enterprise techniques via dense semantic retrieval and local LLM reranking.">
+  <meta property="og:title" content="Defensive AI: Mapping Network Alerts to MITRE ATT&CK">
+  <meta property="og:description" content="Automated SOC alert triage pipeline using SentenceTransformers, ChromaDB, and local Ollama/Qwen 2.5 reasoning.">
   <meta property="og:type" content="website">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- NAV -->
-  <nav class="nav">
-    <div class="container">
-      <a href="#" class="nav-logo">MITRE<span>Mapper</span></a>
+  <!-- Navigation Bar -->
+  <header class="navbar">
+    <div class="container nav-inner">
+      <a href="#" class="brand">
+        <span>CAM-LDS / MITRE RAG</span>
+        <span class="brand-badge">Defensive AI</span>
+      </a>
       <ul class="nav-links">
-        <li><a href="#problem">Problem</a></li>
-        <li><a href="#architecture">Architecture</a></li>
-        <li><a href="#tech">Tech Stack</a></li>
-        <li><a href="#pipeline">Pipeline</a></li>
-        <li><a href="#results">Results</a></li>
-        <li><a href="https://github.com/aryanthepain/camlds-mitre-attack-llm" target="_blank">GitHub ↗</a></li>
+        <li><a href="#pipeline" class="nav-link">Data-Flow</a></li>
+        <li><a href="#sandbox" class="nav-link">Interactive Sandbox</a></li>
+        <li><a href="#benchmarks" class="nav-link">Evaluation</a></li>
+        <li><a href="#resources" class="nav-link">Resources</a></li>
       </ul>
+      <a href="https://github.com/aryanthepain/camlds-mitre-attack-llm" class="nav-btn" target="_blank" rel="noopener">
+        <span>GitHub Source</span>
+        <span>&rarr;</span>
+      </a>
     </div>
-  </nav>
+  </header>
 
-  <!-- HERO -->
+  <!-- Hero Section -->
   <section class="hero">
-    <div class="hero-content">
-      <div class="hero-badge">
-        <span class="dot"></span>
-        Defensive AI · Cybersecurity · NLP
-      </div>
-      <h1>
-        Automated <span class="gradient">MITRE ATT&CK</span> Mapping for Network Alerts
-      </h1>
-      <p>
-        An end-to-end RAG pipeline that maps raw Suricata IDS alerts to MITRE ATT&CK technique identifiers using semantic retrieval and local LLM reasoning — no paid APIs required.
+    <div class="container">
+      <div class="hero-preheader">Defensive Cybersecurity Analytics &middot; SOC Automation</div>
+      <h1 class="hero-title">Automated Mapping of Suricata Alerts to MITRE ATT&amp;CK using LLM/RAG</h1>
+      <p class="hero-desc">
+        Security Operations Centers face tens of thousands of low-level intrusion detection alerts daily. This project implements a deterministic Retrieval-Augmented Generation pipeline that translates raw Suricata <code style="font-family: var(--font-mono); font-size: 0.9em; color: var(--amber-light);">eve.json</code> alerts into verified MITRE ATT&amp;CK Enterprise technique identifiers using dense embeddings and local LLM reasoning.
       </p>
-      <div class="hero-buttons">
-        <a href="https://github.com/aryanthepain/camlds-mitre-attack-llm" class="btn btn-primary" target="_blank">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
-          View on GitHub
-        </a>
-        <a href="#architecture" class="btn btn-secondary">
-          Explore Architecture →
-        </a>
+
+      <!-- Telemetry Specifications Strip -->
+      <div class="telemetry-strip">
+        <div class="telemetry-item">
+          <div class="telemetry-label">Input Data Source</div>
+          <div class="telemetry-value">CAM-LDS eve.json</div>
+        </div>
+        <div class="telemetry-item">
+          <div class="telemetry-label">MITRE STIX Corpus</div>
+          <div class="telemetry-value">626 Enterprise Techniques</div>
+        </div>
+        <div class="telemetry-item">
+          <div class="telemetry-label">Dense Vector Model</div>
+          <div class="telemetry-value">all-MiniLM-L6-v2 (384-d)</div>
+        </div>
+        <div class="telemetry-item">
+          <div class="telemetry-label">Vector Storage</div>
+          <div class="telemetry-value">ChromaDB Local Engine</div>
+        </div>
+        <div class="telemetry-item">
+          <div class="telemetry-label">Local LLM Layer</div>
+          <div class="telemetry-value">Ollama / Qwen 2.5 7B</div>
+        </div>
+      </div>
+
+      <div class="hero-actions">
+        <a href="#sandbox" class="btn-primary">Test Live Sandbox &darr;</a>
+        <a href="https://github.com/aryanthepain/camlds-mitre-attack-llm/blob/master/report/final_report_filled.md" class="btn-ghost" target="_blank" rel="noopener">Read Technical Report</a>
+        <a href="https://github.com/aryanthepain/camlds-mitre-attack-llm" class="btn-ghost" target="_blank" rel="noopener">View Repository</a>
       </div>
     </div>
   </section>
 
-  <!-- PROBLEM -->
-  <section id="problem" class="fade-in">
+  <!-- Data-Flow Pipeline Section -->
+  <section id="pipeline" class="section">
     <div class="container">
-      <div class="section-label">The Problem</div>
-      <h2 class="section-title">Why Automated Alert Mapping Matters</h2>
-      <p class="section-desc">
-        SOC analysts face thousands of low-level IDS alerts daily. Translating them into actionable MITRE ATT&CK intelligence is manual, slow, and error-prone.
-      </p>
-      <div class="problem-grid">
-        <div class="problem-card">
-          <div class="icon icon-red">🔥</div>
-          <h3>Alert Fatigue</h3>
-          <p>SOC teams process 10,000+ alerts per day. Most are noise. Finding the real adversary behavior buried in Suricata signatures requires deep expertise and hours of manual triage.</p>
-        </div>
-        <div class="problem-card">
-          <div class="icon icon-blue">🧩</div>
-          <h3>Knowledge Gap</h3>
-          <p>Mapping a raw network signature like "ET SCAN Nmap User-Agent" to ATT&CK technique T1046 (Network Service Discovery) requires both IDS expertise and ATT&CK fluency.</p>
-        </div>
-        <div class="problem-card">
-          <div class="icon icon-cyan">⚡</div>
-          <h3>Speed Matters</h3>
-          <p>Incident response depends on rapid classification. Automated mapping gives analysts an immediate ATT&CK-labeled view, accelerating triage and reducing mean time to respond.</p>
-        </div>
+      <div class="section-header">
+        <div class="section-tag">System Architecture</div>
+        <h2 class="section-heading">Five-Stage Data-Flow Pipeline</h2>
+        <p class="section-lead">
+          Every raw network event is normalized, embedded into vector space, cross-referenced against the MITRE ATT&amp;CK Enterprise knowledge base, and resolved via candidate ranking or local LLM reasoning.
+        </p>
       </div>
-    </div>
-  </section>
 
-  <!-- ARCHITECTURE -->
-  <section id="architecture" class="fade-in">
-    <div class="container">
-      <div class="section-label">System Design</div>
-      <h2 class="section-title">RAG Architecture</h2>
-      <p class="section-desc">
-        A retrieval-augmented generation pipeline that grounds every prediction in the official MITRE ATT&CK knowledge base — no hallucination, no guessing.
-      </p>
-      <div class="arch-container">
-        <div class="arch-flow">
-          <div class="arch-step">
-            <div class="step-num">Ingest</div>
-            <h4>CAM-LDS Dataset</h4>
-            <p>Parse Suricata eve.json alerts from raw manifestations archive</p>
+      <div class="pipeline-flow">
+        
+        <!-- Stage 1 -->
+        <div class="pipeline-stage">
+          <div class="stage-meta">
+            <div>
+              <div class="stage-number">Stage 01</div>
+              <div class="stage-title">Raw Ingestion &amp; Event Parsing</div>
+              <div class="stage-desc">
+                Recursively extracts <code style="font-family: var(--font-mono); color: var(--amber-light);">eve.json</code> lines where <code style="font-family: var(--font-mono);">event_type == "alert"</code>. Extracts signature, protocol, ports, category, severity, and network metadata into a normalized text payload.
+              </div>
+            </div>
+            <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); margin-top: 12px;">
+              Module: <span style="color: var(--text-secondary);">src/prepare_dataset.py</span>
+            </div>
           </div>
-          <div class="arch-arrow">→</div>
-          <div class="arch-step">
-            <div class="step-num">Encode</div>
-            <h4>SentenceTransformer</h4>
-            <p>Dense embeddings with all-MiniLM-L6-v2</p>
-          </div>
-          <div class="arch-arrow">→</div>
-          <div class="arch-step">
-            <div class="step-num">Retrieve</div>
-            <h4>ChromaDB</h4>
-            <p>Top-k vector search over 626+ MITRE techniques</p>
-          </div>
-          <div class="arch-arrow">→</div>
-          <div class="arch-step">
-            <div class="step-num">Reason</div>
-            <h4>LLM Reranker</h4>
-            <p>Optional Ollama / Qwen 2.5 7B selects from candidates</p>
-          </div>
-          <div class="arch-arrow">→</div>
-          <div class="arch-step">
-            <div class="step-num">Output</div>
-            <h4>Structured Prediction</h4>
-            <p>technique_id, confidence, reason, candidates</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- TECH STACK -->
-  <section id="tech" class="fade-in">
-    <div class="container">
-      <div class="section-label">Technologies</div>
-      <h2 class="section-title">Tech Stack</h2>
-      <p class="section-desc">
-        Built with production-grade open-source tools — no paid APIs, no cloud lock-in.
-      </p>
-      <div class="tech-grid">
-        <div class="tech-card">
-          <div class="tech-icon" style="background:rgba(55,118,171,.15);color:#3776AB">🐍</div>
-          <div>
-            <h4>Python 3.10+</h4>
-            <p>Core language & pipeline</p>
-          </div>
-        </div>
-        <div class="tech-card">
-          <div class="tech-icon" style="background:rgba(0,212,255,.12);color:var(--cyan)">🔤</div>
-          <div>
-            <h4>SentenceTransformers</h4>
-            <p>Dense semantic embeddings</p>
-          </div>
-        </div>
-        <div class="tech-card">
-          <div class="tech-icon" style="background:rgba(255,107,53,.12);color:var(--orange)">🗄️</div>
-          <div>
-            <h4>ChromaDB</h4>
-            <p>Vector database & retrieval</p>
-          </div>
-        </div>
-        <div class="tech-card">
-          <div class="tech-icon" style="background:rgba(233,69,96,.12);color:var(--accent)">🤖</div>
-          <div>
-            <h4>Ollama + Qwen 2.5</h4>
-            <p>Local LLM reasoning</p>
-          </div>
-        </div>
-        <div class="tech-card">
-          <div class="tech-icon" style="background:rgba(114,9,183,.12);color:var(--purple)">🛡️</div>
-          <div>
-            <h4>MITRE ATT&CK</h4>
-            <p>Enterprise STIX knowledge base</p>
-          </div>
-        </div>
-        <div class="tech-card">
-          <div class="tech-icon" style="background:rgba(6,214,160,.12);color:var(--green)">📊</div>
-          <div>
-            <h4>scikit-learn</h4>
-            <p>ML evaluation metrics</p>
-          </div>
-        </div>
-        <div class="tech-card">
-          <div class="tech-icon" style="background:rgba(67,97,238,.12);color:var(--blue)">🔬</div>
-          <div>
-            <h4>QLoRA / Unsloth</h4>
-            <p>Fine-tuning (Colab)</p>
-          </div>
-        </div>
-        <div class="tech-card">
-          <div class="tech-icon" style="background:rgba(255,255,255,.06);color:var(--text-secondary)">📦</div>
-          <div>
-            <h4>CAM-LDS Dataset</h4>
-            <p>Suricata network IDS alerts</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- PIPELINE STEPS -->
-  <section id="pipeline" class="fade-in">
-    <div class="container">
-      <div class="section-label">How It Works</div>
-      <h2 class="section-title">Pipeline Walkthrough</h2>
-      <p class="section-desc">
-        Run the entire pipeline with a single command — or step through each stage independently.
-      </p>
-      <div class="steps">
-        <div class="step-item">
-          <div class="step-number">1</div>
-          <div class="step-content">
-            <h4>Download CAM-LDS Data</h4>
-            <p>Fetch the raw manifestations archive from Zenodo containing Suricata <code>eve.json</code> network alert logs from controlled attack scenarios.</p>
-          </div>
-        </div>
-        <div class="step-item">
-          <div class="step-number">2</div>
-          <div class="step-content">
-            <h4>Prepare Alert Dataset</h4>
-            <p>Parse all <code>eve.json</code> files, extract alert events, and build a clean JSONL dataset with signatures, categories, severity, protocols, and ground-truth MITRE labels.</p>
-          </div>
-        </div>
-        <div class="step-item">
-          <div class="step-number">3</div>
-          <div class="step-content">
-            <h4>Build MITRE ATT&CK Knowledge Base</h4>
-            <p>Download the official MITRE ATT&CK Enterprise STIX JSON and parse 626+ technique documents with descriptions, detection guidance, and tactic mappings.</p>
-          </div>
-        </div>
-        <div class="step-item">
-          <div class="step-number">4</div>
-          <div class="step-content">
-            <h4>Create Vector Database</h4>
-            <p>Encode all MITRE technique documents using SentenceTransformers and index them in ChromaDB for fast cosine similarity retrieval.</p>
-          </div>
-        </div>
-        <div class="step-item">
-          <div class="step-number">5</div>
-          <div class="step-content">
-            <h4>RAG Inference</h4>
-            <p>For each alert, retrieve the top-k most similar MITRE techniques. In retrieval-only mode, predict the nearest. In LLM mode, pass candidates to Qwen 2.5 for contextual reasoning.</p>
-          </div>
-        </div>
-        <div class="step-item">
-          <div class="step-number">6</div>
-          <div class="step-content">
-            <h4>Evaluate & Report</h4>
-            <p>Compute accuracy, precision, recall, F1, and top-k recall. Generate confusion matrices, classification reports, and a filled project report.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- RESULTS -->
-  <section id="results" class="fade-in">
-    <div class="container">
-      <div class="section-label">Evaluation</div>
-      <h2 class="section-title">Results & Analysis</h2>
-      <p class="section-desc">
-        Baseline retrieval-only results on a small test slice. The architecture is designed for iterative improvement.
-      </p>
-      <div class="results-grid">
-        <div class="metric-card">
-          <div class="metric-value" style="color:var(--cyan)">RAG</div>
-          <div class="metric-label">Architecture</div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-value" style="color:var(--green)">626+</div>
-          <div class="metric-label">MITRE Techniques</div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-value" style="color:var(--orange)">Top-5</div>
-          <div class="metric-label">Candidate Retrieval</div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-value" style="color:var(--purple)">QLoRA</div>
-          <div class="metric-label">Fine-tuning Ready</div>
-        </div>
-      </div>
-      <div class="results-note">
-        <strong>Note on baseline metrics:</strong> The retrieval-only baseline was evaluated on a small test slice (11 alerts, single technique class). Generic sentence embeddings underperform on infrastructure-level Suricata messages. The system is designed to improve through: (1) larger diverse test sets, (2) LLM reranking via Ollama, and (3) QLoRA fine-tuning — a Colab notebook is included in the repository.
-      </div>
-    </div>
-  </section>
-
-  <!-- CODE SAMPLE -->
-  <section class="fade-in">
-    <div class="container">
-      <div class="section-label">Output Format</div>
-      <h2 class="section-title">Structured Predictions</h2>
-      <p class="section-desc">
-        Each prediction includes the technique ID, confidence score, reasoning, and the full candidate list for auditability.
-      </p>
-      <div class="code-block">
-        <div class="code-header">
-          <span class="code-dot red"></span>
-          <span class="code-dot yellow"></span>
-          <span class="code-dot green"></span>
-          <span class="code-title">prediction_output.json</span>
-        </div>
-        <div class="code-body">
-<pre>{
-  <span class="key">"alert_id"</span>: <span class="str">"abc123"</span>,
-  <span class="key">"gold_technique_id"</span>: <span class="str">"T1046"</span>,
-  <span class="key">"predicted_technique_id"</span>: <span class="str">"T1046"</span>,
-  <span class="key">"predicted_name"</span>: <span class="str">"Network Service Discovery"</span>,
-  <span class="key">"confidence"</span>: <span class="num">0.78</span>,
-  <span class="key">"candidate_ids"</span>: [<span class="str">"T1046"</span>, <span class="str">"T1595"</span>, <span class="str">"T1018"</span>, <span class="str">"T1040"</span>, <span class="str">"T1135"</span>],
-  <span class="key">"topk_contains_gold"</span>: <span class="bool">true</span>,
-  <span class="key">"reason"</span>: <span class="str">"The alert signature indicates network scanning."</span>
+          <div class="stage-payload">
+<pre><span class="syntax-comment">// Raw Suricata Alert Payload</span>
+{
+  <span class="syntax-key">"timestamp"</span>: <span class="syntax-str">"2026-02-14T08:21:04.102Z"</span>,
+  <span class="syntax-key">"event_type"</span>: <span class="syntax-str">"alert"</span>,
+  <span class="syntax-key">"src_ip"</span>: <span class="syntax-str">"192.168.1.45"</span>,
+  <span class="syntax-key">"dest_port"</span>: <span class="syntax-num">80</span>,
+  <span class="syntax-key">"proto"</span>: <span class="syntax-str">"TCP"</span>,
+  <span class="syntax-key">"alert"</span>: {
+    <span class="syntax-key">"signature"</span>: <span class="syntax-str">"ET SCAN Nmap Scripting Engine User-Agent Detected"</span>,
+    <span class="syntax-key">"category"</span>: <span class="syntax-str">"Attempted Information Leak"</span>,
+    <span class="syntax-key">"severity"</span>: <span class="syntax-num">2</span>,
+    <span class="syntax-key">"signature_id"</span>: <span class="syntax-num">2009358</span>
+  }
 }</pre>
+          </div>
+        </div>
+
+        <!-- Stage 2 -->
+        <div class="pipeline-stage">
+          <div class="stage-meta">
+            <div>
+              <div class="stage-number">Stage 02</div>
+              <div class="stage-title">Dense Vector Encoding</div>
+              <div class="stage-desc">
+                Constructs a contextual natural-language alert descriptor and computes a 384-dimensional normalized cosine embedding using <code style="font-family: var(--font-mono); color: var(--amber-light);">all-MiniLM-L6-v2</code>.
+              </div>
+            </div>
+            <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); margin-top: 12px;">
+              Dimension: <span style="color: var(--text-secondary);">384-Float32 Normalized</span>
+            </div>
+          </div>
+          <div class="stage-payload">
+<pre><span class="syntax-comment">// Linearized Alert Representation &amp; Embedding Output</span>
+<span class="syntax-key">text</span> = <span class="syntax-str">"suricata alert signature: ET SCAN Nmap Scripting Engine User-Agent | category: Attempted Information Leak | severity: 2 | proto: TCP | app: http"</span>
+
+<span class="syntax-comment">// Tensor Vector Representation</span>
+<span class="syntax-key">embedding</span> = [
+  <span class="syntax-num">-0.041829</span>,  <span class="syntax-num">0.089124</span>, <span class="syntax-num">-0.034512</span>,  <span class="syntax-num">0.012891</span>, 
+  <span class="syntax-num">-0.071239</span>, <span class="syntax-num">-0.019482</span>,  <span class="syntax-num">0.056123</span>, <span class="syntax-num">-0.098412</span>, 
+  <span class="syntax-comment">/* ... 376 additional floating-point components ... */</span>
+]</pre>
+          </div>
+        </div>
+
+        <!-- Stage 3 -->
+        <div class="pipeline-stage">
+          <div class="stage-meta">
+            <div>
+              <div class="stage-number">Stage 03</div>
+              <div class="stage-title">ChromaDB Top-K Retrieval</div>
+              <div class="stage-desc">
+                Executes vector nearest-neighbor search over 626 MITRE Enterprise techniques compiled from official STIX JSON. Returns top-5 candidate techniques ranked by cosine similarity.
+              </div>
+            </div>
+            <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); margin-top: 12px;">
+              Module: <span style="color: var(--text-secondary);">src/build_vector_db.py</span>
+            </div>
+          </div>
+          <div class="stage-payload">
+<pre><span class="syntax-comment">// ChromaDB Query Result (Top Candidates)</span>
+[
+  { <span class="syntax-key">"id"</span>: <span class="syntax-str">"T1046"</span>,     <span class="syntax-key">"name"</span>: <span class="syntax-str">"Network Service Discovery"</span>,    <span class="syntax-key">"similarity"</span>: <span class="syntax-num">0.7842</span>, <span class="syntax-key">"tactic"</span>: <span class="syntax-str">"discovery"</span> },
+  { <span class="syntax-key">"id"</span>: <span class="syntax-str">"T1595"</span>,     <span class="syntax-key">"name"</span>: <span class="syntax-str">"Active Scanning"</span>,             <span class="syntax-key">"similarity"</span>: <span class="syntax-num">0.7410</span>, <span class="syntax-key">"tactic"</span>: <span class="syntax-str">"reconnaissance"</span> },
+  { <span class="syntax-key">"id"</span>: <span class="syntax-str">"T1018"</span>,     <span class="syntax-key">"name"</span>: <span class="syntax-str">"Remote System Discovery"</span>,      <span class="syntax-key">"similarity"</span>: <span class="syntax-num">0.6829</span>, <span class="syntax-key">"tactic"</span>: <span class="syntax-str">"discovery"</span> },
+  { <span class="syntax-key">"id"</span>: <span class="syntax-str">"T1040"</span>,     <span class="syntax-key">"name"</span>: <span class="syntax-str">"Network Sniffing"</span>,             <span class="syntax-key">"similarity"</span>: <span class="syntax-num">0.6105</span>, <span class="syntax-key">"tactic"</span>: <span class="syntax-str">"credential-access"</span> },
+  { <span class="syntax-key">"id"</span>: <span class="syntax-str">"T1190"</span>,     <span class="syntax-key">"name"</span>: <span class="syntax-str">"Exploit Public-Facing App"</span>,   <span class="syntax-key">"similarity"</span>: <span class="syntax-num">0.5891</span>, <span class="syntax-key">"tactic"</span>: <span class="syntax-str">"initial-access"</span> }
+]</pre>
+          </div>
+        </div>
+
+        <!-- Stage 4 & 5 -->
+        <div class="pipeline-stage">
+          <div class="stage-meta">
+            <div>
+              <div class="stage-number">Stage 04 &amp; 05</div>
+              <div class="stage-title">LLM Decision &amp; Audit Output</div>
+              <div class="stage-desc">
+                In LLM mode (<code style="font-family: var(--font-mono); color: var(--amber-light);">--llm ollama</code>), candidates are evaluated with strict schema boundaries on local Qwen 2.5 7B. Emits verifiable JSON output with reasoning string and candidate provenance.
+              </div>
+            </div>
+            <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); margin-top: 12px;">
+              Execution: <span style="color: var(--text-secondary);">src/predict_rag.py</span>
+            </div>
+          </div>
+          <div class="stage-payload">
+<pre><span class="syntax-comment">// Structured Triage Prediction Output</span>
+{
+  <span class="syntax-key">"alert_id"</span>: <span class="syntax-str">"faac131a20f6deab"</span>,
+  <span class="syntax-key">"gold_technique_id"</span>: <span class="syntax-str">"T1046"</span>,
+  <span class="syntax-key">"predicted_technique_id"</span>: <span class="syntax-str">"T1046"</span>,
+  <span class="syntax-key">"predicted_name"</span>: <span class="syntax-str">"Network Service Discovery"</span>,
+  <span class="syntax-key">"confidence"</span>: <span class="syntax-num">0.7842</span>,
+  <span class="syntax-key">"topk_contains_gold"</span>: <span class="syntax-bool">true</span>,
+  <span class="syntax-key">"reason"</span>: <span class="syntax-str">"Nmap Scripting Engine user-agent signifies active reconnaissance and network service discovery probing."</span>
+}</pre>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Alert Triage Sandbox -->
+  <section id="sandbox" class="section">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">Interactive Demonstration</div>
+        <h2 class="section-heading">Live Alert Triage Sandbox</h2>
+        <p class="section-lead">
+          Select a verified Suricata network alert scenario from the CAM-LDS dataset below to inspect real-time vector candidate distances, LLM reasoning logic, and structured JSON output.
+        </p>
+      </div>
+
+      <div class="sandbox-wrapper">
+        <div class="sandbox-header">
+          <div class="sandbox-title-group">
+            <span class="sandbox-title">Suricata Triage Workbench</span>
+            <span class="sandbox-badge">Real-Time Simulation</span>
+          </div>
+          <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted);">
+            Engine: SentenceTransformers + ChromaDB Top-5
+          </div>
+        </div>
+
+        <div class="sandbox-body">
+          <!-- Alert Selection Column -->
+          <div class="sandbox-selector-panel">
+            <div class="selector-heading">Select Alert Scenario</div>
+
+            <button class="alert-card active" onclick="selectAlert(0)">
+              <div class="alert-card-type">
+                <span>SCENARIO A</span>
+                <span>TCP / 80</span>
+              </div>
+              <div class="alert-card-sig">ET SCAN Nmap Scripting Engine Detected</div>
+              <div class="alert-card-meta">Category: Reconnaissance &middot; Sev 2</div>
+            </button>
+
+            <button class="alert-card" onclick="selectAlert(1)">
+              <div class="alert-card-type">
+                <span>SCENARIO B</span>
+                <span>HTTP / 443</span>
+              </div>
+              <div class="alert-card-sig">GPL WEB_SERVER DELETE attempt</div>
+              <div class="alert-card-meta">Category: Web Application Exploit &middot; Sev 2</div>
+            </button>
+
+            <button class="alert-card" onclick="selectAlert(2)">
+              <div class="alert-card-type">
+                <span>SCENARIO C</span>
+                <span>SSH / 22</span>
+              </div>
+              <div class="alert-card-sig">ET POLICY GNU/Linux APT Outbound Traffic</div>
+              <div class="alert-card-meta">Category: Package Management &middot; Sev 3</div>
+            </button>
+          </div>
+
+          <!-- Execution & Output Column -->
+          <div class="sandbox-exec-panel">
+            
+            <!-- Candidate Matches -->
+            <div>
+              <div class="exec-subheading">
+                <span>Vector Nearest Neighbors (Top-5 Retrieved)</span>
+                <span id="active-scenario-tag" style="color: var(--amber-light);">Scenario A Active</span>
+              </div>
+              <div class="candidates-list" id="candidates-container">
+                <!-- Dynamically Populated by JS -->
+              </div>
+            </div>
+
+            <!-- Structured Decision -->
+            <div>
+              <div class="exec-subheading">Structured LLM Mapping &amp; Reasoning</div>
+              <div class="decision-box success" id="decision-container">
+                <!-- Dynamically Populated by JS -->
+              </div>
+            </div>
+
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- CTA -->
-  <section class="cta fade-in">
+  <!-- Technical Benchmarks & Methodology -->
+  <section id="benchmarks" class="section">
     <div class="container">
-      <h2>Explore the Full Pipeline</h2>
-      <p>Clone the repo, run the pipeline, and see automated ATT&CK mapping in action.</p>
-      <div class="hero-buttons">
-        <a href="https://github.com/aryanthepain/camlds-mitre-attack-llm" class="btn btn-primary" target="_blank">
-          View on GitHub
+      <div class="section-header">
+        <div class="section-tag">Evaluation Framework</div>
+        <h2 class="section-heading">Empirical Results &amp; Architecture Insights</h2>
+        <p class="section-lead">
+          Honest benchmark reporting on the initial CAM-LDS test slice, explaining vector embedding trade-offs and future fine-tuning pathways.
+        </p>
+      </div>
+
+      <div class="benchmarks-grid">
+        <div class="benchmarks-table-wrap">
+          <table class="tech-table">
+            <thead>
+              <tr>
+                <th>Pipeline Metric</th>
+                <th>Baseline (Retrieval Only)</th>
+                <th>Fine-Tuned Target (QLoRA)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Evaluation Dataset</td>
+                <td class="mono">CAM-LDS eve.json</td>
+                <td class="mono">Full 48-Scenario Suite</td>
+              </tr>
+              <tr>
+                <td>KB Corpus Size</td>
+                <td class="mono">626 Techniques</td>
+                <td class="mono">626 Techniques</td>
+              </tr>
+              <tr>
+                <td>Candidate Window (k)</td>
+                <td class="mono">Top-5 Candidates</td>
+                <td class="mono">Top-5 Candidates</td>
+              </tr>
+              <tr>
+                <td>Inference Latency</td>
+                <td class="mono">&lt; 14ms (Local Chroma)</td>
+                <td class="mono">~180ms (Local Ollama)</td>
+              </tr>
+              <tr>
+                <td>Paid API Dependency</td>
+                <td class="mono" style="color: var(--green);">None (100% Free)</td>
+                <td class="mono" style="color: var(--green);">None (Local GPU/CPU)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="benchmarks-note-box">
+          <div>
+            <div class="note-heading">Understanding Baseline vs Specialized Embeddings</div>
+            <p class="note-text">
+              Generic sentence transformers (<code style="font-family: var(--font-mono); color: var(--amber-light);">all-MiniLM-L6-v2</code>) are trained on general English semantic similarity. While they successfully cluster high-semantic signatures like port scans to <code style="font-family: var(--font-mono);">T1046</code>, generic network transport anomalies require domain adaptation.
+            </p>
+            <p class="note-text">
+              To close this gap without paying for commercial APIs, this repository includes a dedicated <strong>QLoRA fine-tuning notebook</strong> for Google Colab using Unsloth to adapt Qwen 2.5 directly to Suricata IDS signature syntax.
+            </p>
+          </div>
+          <div style="font-family: var(--font-mono); font-size: 0.78rem;">
+            Notebook: <a href="https://github.com/aryanthepain/camlds-mitre-attack-llm/blob/master/camlds_qwen_qlora_colab_balanced.ipynb" target="_blank" rel="noopener" style="color: var(--amber-light); text-decoration: underline;">camlds_qwen_qlora_colab_balanced.ipynb &rarr;</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Technical Resources -->
+  <section id="resources" class="section">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">Documentation &amp; Code</div>
+        <h2 class="section-heading">Project Artifacts</h2>
+        <p class="section-lead">
+          All code, data pipelines, configuration files, and evaluation scripts are available under the open-source MIT License.
+        </p>
+      </div>
+
+      <div class="resources-grid">
+        <a href="https://github.com/aryanthepain/camlds-mitre-attack-llm" class="resource-card" target="_blank" rel="noopener">
+          <div>
+            <div class="res-type">GitHub Repository</div>
+            <div class="res-title">Source Code &amp; Runner</div>
+            <div class="res-desc">Complete Python pipeline with CLI runner, ChromaDB builder, and metrics generator.</div>
+          </div>
+          <div class="res-link">github.com/aryanthepain/camlds-mitre-attack-llm &rarr;</div>
         </a>
-        <a href="https://github.com/aryanthepain/camlds-mitre-attack-llm/blob/master/report/final_report_filled.md" class="btn btn-secondary" target="_blank">
-          Read Full Report
+
+        <a href="https://github.com/aryanthepain/camlds-mitre-attack-llm/blob/master/report/final_report_filled.md" class="resource-card" target="_blank" rel="noopener">
+          <div>
+            <div class="res-type">Academic Report</div>
+            <div class="res-title">Full Technical Report</div>
+            <div class="res-desc">230-line comprehensive report covering methodology, data engineering, and limitations.</div>
+          </div>
+          <div class="res-link">View final_report_filled.md &rarr;</div>
+        </a>
+
+        <a href="https://github.com/aryanthepain/camlds-mitre-attack-llm/blob/master/camlds_qwen_qlora_colab_balanced.ipynb" class="resource-card" target="_blank" rel="noopener">
+          <div>
+            <div class="res-type">Jupyter Notebook</div>
+            <div class="res-title">QLoRA Fine-Tuning</div>
+            <div class="res-desc">Colab notebook for parameter-efficient fine-tuning of Qwen 2.5 with Unsloth.</div>
+          </div>
+          <div class="res-link">Open in Colab / GitHub &rarr;</div>
+        </a>
+
+        <a href="https://zenodo.org/records/18861762" class="resource-card" target="_blank" rel="noopener">
+          <div>
+            <div class="res-type">Zenodo Dataset</div>
+            <div class="res-title">CAM-LDS Manifestations</div>
+            <div class="res-desc">Public cyber attack manifestations log dataset containing raw Suricata eve.json records.</div>
+          </div>
+          <div class="res-link">Zenodo Record 18861762 &rarr;</div>
         </a>
       </div>
     </div>
   </section>
 
-  <!-- FOOTER -->
+  <!-- Footer & Legal -->
   <footer class="footer">
     <div class="container">
-      <div class="footer-links">
-        <a href="https://github.com/aryanthepain" target="_blank">GitHub</a>
-        <a href="https://stellar-salamander-6c2.notion.site/Aryan-Gupta-21f5809f0c2180d5a3b9f4d2a26fafec" target="_blank">Portfolio</a>
-        <a href="https://linkedin.com/in/" target="_blank">LinkedIn</a>
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <h4>Defensive AI &middot; MITRE ATT&amp;CK Mapper</h4>
+          <p>
+            An open-source research pipeline for automated network intrusion triage and semantic ATT&amp;CK technique classification.
+          </p>
+        </div>
+
+        <div class="footer-links-group">
+          <div class="footer-col">
+            <h5>Navigation</h5>
+            <ul>
+              <li><a href="#pipeline">Data-Flow Pipeline</a></li>
+              <li><a href="#sandbox">Live Sandbox</a></li>
+              <li><a href="#benchmarks">Evaluation</a></li>
+              <li><a href="#resources">Artifacts</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h5>Author</h5>
+            <ul>
+              <li><a href="https://github.com/aryanthepain" target="_blank" rel="noopener">GitHub Profile</a></li>
+              <li><a href="https://stellar-salamander-6c2.notion.site/Aryan-Gupta-21f5809f0c2180d5a3b9f4d2a26fafec" target="_blank" rel="noopener">Notion Portfolio</a></li>
+              <li><a href="mailto:aryan.gupta@iitg.ac.in">aryan.gupta@iitg.ac.in</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h5>Legal</h5>
+            <ul>
+              <li><a onclick="openModal('modal-terms')">Terms of Service</a></li>
+              <li><a onclick="openModal('modal-privacy')">Privacy Policy</a></li>
+              <li><a href="https://github.com/aryanthepain/camlds-mitre-attack-llm/blob/master/LICENSE" target="_blank" rel="noopener">MIT License</a></li>
+            </ul>
+          </div>
+        </div>
       </div>
-      <p>Built by Aryan Gupta · IIT Guwahati · 2026</p>
+
+      <div class="footer-bottom">
+        <div>&copy; 2026 Aryan Gupta &middot; Indian Institute of Technology Guwahati</div>
+        <div>STIX &amp; MITRE ATT&amp;CK &reg; are registered trademarks of The MITRE Corporation.</div>
+      </div>
     </div>
   </footer>
 
-  <!-- SCROLL ANIMATIONS -->
-  <script>
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
-      });
-    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  <!-- Modal: Terms of Service -->
+  <div id="modal-terms" class="modal-backdrop" onclick="closeModalOnBackdrop(event, 'modal-terms')">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Terms of Service</h3>
+        <button class="modal-close" onclick="closeModal('modal-terms')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <h4>1. Academic &amp; Demonstration Use</h4>
+        <p>This software and showcase website are provided strictly for educational, research, and defensive security evaluation purposes. The implementation is intended to demonstrate automated alert triage workflows in controlled environments.</p>
+        
+        <h4>2. No Warranty</h4>
+        <p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT.</p>
+        
+        <h4>3. Attribution</h4>
+        <p>MITRE ATT&amp;CK &reg; is a registered trademark of The MITRE Corporation. CAM-LDS dataset is credited to Landauer et al., Zenodo record 18861762.</p>
+      </div>
+    </div>
+  </div>
 
-    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+  <!-- Modal: Privacy Policy -->
+  <div id="modal-privacy" class="modal-backdrop" onclick="closeModalOnBackdrop(event, 'modal-privacy')">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Privacy Policy</h3>
+        <button class="modal-close" onclick="closeModal('modal-privacy')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <h4>1. Zero Telemetry Tracking</h4>
+        <p>This static showcase website does not collect, log, transmit, or store any personal data, browser telemetry, cookies, or fingerprinting information.</p>
+        
+        <h4>2. Client-Side Simulation</h4>
+        <p>All interactive sandbox queries are calculated completely client-side in your web browser. No alert data is transmitted to external servers during simulation.</p>
+        
+        <h4>3. Third-Party Hosting</h4>
+        <p>This site is hosted via GitHub Pages. Please refer to GitHub's Privacy Statement regarding standard web server access logs.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Client-Side Sandbox Logic -->
+  <script>
+    const alertScenarios = [
+      {
+        tag: "Scenario A (Reconnaissance)",
+        candidates: [
+          { id: "T1046", name: "Network Service Discovery", tactic: "Discovery", sim: 0.784, winner: true },
+          { id: "T1595", name: "Active Scanning", tactic: "Reconnaissance", sim: 0.741, winner: false },
+          { id: "T1018", name: "Remote System Discovery", tactic: "Discovery", sim: 0.682, winner: false },
+          { id: "T1040", name: "Network Sniffing", tactic: "Credential Access", sim: 0.610, winner: false },
+          { id: "T1190", name: "Exploit Public-Facing App", tactic: "Initial Access", sim: 0.589, winner: false }
+        ],
+        decision: {
+          id: "T1046 — Network Service Discovery",
+          tactic: "TA0007 Discovery",
+          confidence: "0.7842 (Cosine Similarity: 78.4%)",
+          reason: "The Nmap Scripting Engine user-agent signature specifically denotes active network service enumeration and port discovery against destination port 80."
+        }
+      },
+      {
+        tag: "Scenario B (Web Application Attack)",
+        candidates: [
+          { id: "T1190", name: "Exploit Public-Facing Application", tactic: "Initial Access", sim: 0.812, winner: true },
+          { id: "T1059", name: "Command & Scripting Interpreter", tactic: "Execution", sim: 0.645, winner: false },
+          { id: "T1505", name: "Server Software Component", tactic: "Persistence", sim: 0.598, winner: false },
+          { id: "T1071.001", name: "Web Protocols", tactic: "Command & Control", sim: 0.563, winner: false },
+          { id: "T1567", name: "Exfiltration Over Web Service", tactic: "Exfiltration", sim: 0.491, winner: false }
+        ],
+        decision: {
+          id: "T1190 — Exploit Public-Facing Application",
+          tactic: "TA0001 Initial Access",
+          confidence: "0.8120 (Cosine Similarity: 81.2%)",
+          reason: "HTTP DELETE request targeted against web server root indicates an attempt to exploit server endpoint permissions and public-facing web infrastructure."
+        }
+      },
+      {
+        tag: "Scenario C (Package Management / C2 Probe)",
+        candidates: [
+          { id: "T1602", name: "Data from Configuration Repository", tactic: "Collection", sim: 0.678, winner: true },
+          { id: "T1071.001", name: "Web Protocols (Outbound APT)", tactic: "Command & Control", sim: 0.615, winner: false },
+          { id: "T1195.001", name: "Compromise Software Dependencies", tactic: "Initial Access", sim: 0.584, winner: false },
+          { id: "T1518.001", name: "Security Software Discovery", tactic: "Discovery", sim: 0.512, winner: false },
+          { id: "T1059.004", name: "Unix Shell", tactic: "Execution", sim: 0.470, winner: false }
+        ],
+        decision: {
+          id: "T1602 — Data from Configuration Repository",
+          tactic: "TA0009 Collection",
+          confidence: "0.6780 (Cosine Similarity: 67.8%)",
+          reason: "Outbound GNU/Linux APT user-agent represents software repository querying and package configuration inspection over the network."
+        }
+      }
+    ];
+
+    function renderScenario(index) {
+      const scenario = alertScenarios[index];
+      document.getElementById('active-scenario-tag').textContent = scenario.tag;
+
+      // Render candidates
+      const container = document.getElementById('candidates-container');
+      container.innerHTML = scenario.candidates.map(c => `
+        <div class="candidate-row ${c.winner ? 'is-winner' : ''}">
+          <span class="cand-id">${c.id}</span>
+          <span class="cand-name">${c.name}</span>
+          <div class="cand-bar-wrap">
+            <div class="cand-bar" style="width: ${Math.round(c.sim * 100)}%;"></div>
+          </div>
+          <span class="cand-sim">${(c.sim * 100).toFixed(1)}%</span>
+        </div>
+      `).join('');
+
+      // Render decision
+      const decisionContainer = document.getElementById('decision-container');
+      decisionContainer.innerHTML = `
+        <div class="decision-header">
+          <div class="decision-tech">${scenario.decision.id}</div>
+          <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--amber-light);">${scenario.decision.tactic}</div>
+        </div>
+        <div class="decision-reason">${scenario.decision.reason}</div>
+        <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); margin-top: 10px;">
+          Confidence Score: <span style="color: var(--text-secondary);">${scenario.decision.confidence}</span>
+        </div>
+      `;
+    }
+
+    function selectAlert(index) {
+      const cards = document.querySelectorAll('.alert-card');
+      cards.forEach((card, i) => {
+        if (i === index) card.classList.add('active');
+        else card.classList.remove('active');
+      });
+      renderScenario(index);
+    }
+
+    // Modal controls
+    function openModal(id) {
+      document.getElementById(id).classList.add('active');
+    }
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('active');
+    }
+    function closeModalOnBackdrop(e, id) {
+      if (e.target.id === id) closeModal(id);
+    }
+
+    // Initialize on load
+    document.addEventListener('DOMContentLoaded', () => {
+      renderScenario(0);
+    });
   </script>
 
 </body>
