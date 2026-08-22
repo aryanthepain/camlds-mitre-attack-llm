@@ -1,0 +1,36 @@
+project:
+  name: camlds_mitre_llm_project
+  random_seed: 42
+
+data:
+  raw_dir: data/raw
+  processed_dir: data/processed
+  raw_zip: data/raw/manifestations_raw.zip
+  alerts_jsonl: data/processed/suricata_alerts.jsonl
+  train_jsonl: data/processed/train.jsonl
+  test_jsonl: data/processed/test.jsonl
+  max_per_technique: 300
+  test_size: 0.25
+
+mitre:
+  stix_url: https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master/enterprise-attack/enterprise-attack.json
+  stix_json: data/mitre/enterprise-attack.json
+  techniques_jsonl: data/mitre/enterprise_techniques.jsonl
+  lookup_json: data/mitre/technique_lookup.json
+
+rag:
+  db_dir: data/vector_db/chroma_mitre
+  collection_name: mitre_enterprise_techniques
+  embedding_model: sentence-transformers/all-MiniLM-L6-v2
+  top_k: 5
+
+llm:
+  mode: none     # none or ollama
+  ollama_host: http://localhost:11434
+  ollama_model: qwen2.5:7b-instruct
+
+outputs:
+  predictions_jsonl: outputs/predictions.jsonl
+  metrics_json: outputs/metrics.json
+  classification_report_csv: outputs/classification_report.csv
+  confusion_csv: outputs/confusion_matrix.csv
